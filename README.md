@@ -14,11 +14,12 @@ Alternatively, you could try to make it yourself and create a pr :D
 
 ## Publishing and running the app
 0. Open your terminal of choice and run the following command:
+> Please note that the project is automatically configured for use with win-x64
 
     ` dotnet publish -o <output-directory> -r <your-system> `
 
-1. Put the published contents in your PATH if you haven't already
-2. Rename the .exe to something shorter for easier use
+
+2. Put the published contents in your PATH if you haven't already
 
 ## Todo
 
