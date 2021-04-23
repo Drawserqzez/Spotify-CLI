@@ -8,6 +8,5 @@ namespace SpotifyCLI.Utilities {
         PKCETokenResponse Tokens { get; }
 
         Task SaveTokens(PKCETokenResponse tokenResponse);
-        Task<PKCETokenResponse> SaveTokens(Stream jsonData);
     }
 }

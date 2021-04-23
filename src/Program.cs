@@ -11,7 +11,6 @@ namespace SpotifyCLI
     {
         static void Main(string[] args)
         {
-            // TODO: Find a way to inject a list/array of commands into the CommandParser
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((Context, services) => {
                     services.AddSingleton<HttpClient>();

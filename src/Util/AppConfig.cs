@@ -77,12 +77,5 @@ namespace SpotifyCLI.Utilities {
 
             await File.WriteAllLinesAsync(_filePath, new[] { jsonData } );
         }
-
-        public async Task<PKCETokenResponse> SaveTokens(Stream jsonData) {
-            var tokens = await JsonSerializer.DeserializeAsync<PKCETokenResponse>(jsonData);
-
-            await SaveTokens(tokens);
-            return tokens;
-        }
     }
 }

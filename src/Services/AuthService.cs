@@ -12,13 +12,13 @@ namespace SpotifyCLI.Services {
     public class AuthService : IAuthService {
         private readonly string _challenge;
         private readonly IAppConfig _config;
-        private readonly HttpClient _httpClient;
+        private readonly OAuthClient _oAuthClient;
         private readonly Uri _loginRequestUri;
         private readonly IOutputHandler _outputHandler;
         private const string _redirectUri = "http://localhost:1337/callback/";
         private readonly string _verifier;
 
-        public AuthService(IAppConfig config, IOutputHandler outputHandler, HttpClient httpClient) {
+        public AuthService(IAppConfig config, IOutputHandler outputHandler, OAuthClient oAuthClient) {
             (_verifier, _challenge) = PKCEUtil.GenerateCodes();
             _config = config;
             _outputHandler = outputHandler;
@@ -47,13 +47,13 @@ namespace SpotifyCLI.Services {
                 }
             };
 
-            _httpClient = httpClient;
+            _oAuthClient = oAuthClient;
 
             _loginRequestUri = loginRequest.ToUri();
         } 
 
         private async Task<PKCETokenResponse> GetCallbackTokens(string code) {
-            var initialResponse = await new OAuthClient().RequestToken(new PKCETokenRequest(_config.ClientId, code, new Uri(_redirectUri), _verifier));
+            var initialResponse = await _oAuthClient.RequestToken(new PKCETokenRequest(_config.ClientId, code, new Uri(_redirectUri), _verifier));
             _outputHandler.Output("Exchanged code for tokens.");
 
             return initialResponse;
@@ -108,13 +108,12 @@ namespace SpotifyCLI.Services {
         private async Task <PKCETokenResponse> RefreshTokens() {
             try {
                 _outputHandler.Output("Refreshing access-tokens, please wait a moment...");
-                var requestContent = new PKCETokenRefreshRequest(_config.ClientId, _config.Tokens.RefreshToken).ToUrlEncoded();
+                var request = new PKCETokenRefreshRequest(_config.ClientId, _config.Tokens.RefreshToken);
+                var res = await _oAuthClient.RequestToken(request);
 
-                var res = await _httpClient.PostAsync("https://accounts.spotify.com/api/token", requestContent);
-                var jsonData = await res.Content.ReadAsStreamAsync();
+                await _config.SaveTokens(res);
 
-                var newToken = await _config.SaveTokens(jsonData);
-                return newToken;
+                return _config.Tokens;
             } catch (Exception e) {
                 _outputHandler.Output("Something went wrong while trying to refresh the authentication token: ");
                 _outputHandler.Output(e.Message);
