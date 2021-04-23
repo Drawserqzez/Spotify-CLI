@@ -11,6 +11,7 @@ namespace SpotifyCLI.Utilities {
     public static class ServiceCollectionExtensions {
         public static void AddSpotifyClient(this IServiceCollection services) {
             services.AddSingleton<ISpotifyClient>(_ => CreateSpotifyClient(_).Result);
+            services.AddScoped<OAuthClient>();
         }
 
         public static void AddSpotifyCLICommands(this IServiceCollection services) {
