@@ -14,7 +14,7 @@ Alternatively, you could try to make it yourself and create a pr :D
 
 ## Publishing and running the app
 0. Open your terminal of choice and run the following command:
-> Please note that the project is automatically configured for use with win-x64
+> Please note that the project is by default configured for use with win-x64
 
     ` dotnet publish -o <output-directory> -r <your-system> `
 
